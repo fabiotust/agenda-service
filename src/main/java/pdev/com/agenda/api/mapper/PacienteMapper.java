@@ -9,6 +9,7 @@ import pdev.com.agenda.domain.entity.Paciente;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component // preciso colocar como um component agroa que estou usando model mapper
 @RequiredArgsConstructor // preciso dessa ajuda do lombok para usar o modelmapper
@@ -17,43 +18,36 @@ public class PacienteMapper {
 
     private final ModelMapper mapper;
 
-    public Paciente toPaciente{
-
+    public Paciente toPaciente(PacienteRequest request){
+        Paciente paciente = mapper.map(request, Paciente.class);
+        return paciente;
     }
 
-//    public static Paciente toPaciente(PacienteRequest request) {
-//        Paciente paciente = new Paciente();
-//        paciente.setNome(request.getNome());
-//        paciente.setSobrenome(request.getSobrenome());
-//        paciente.setEmail(request.getEmail());
-//        paciente.setCpf(request.getCpf());
+    public PacienteResponse toPacienteResponse(Paciente paciente){
+        return mapper.map(paciente, PacienteResponse.class);
+    }
+
+    public List<PacienteResponse> toPacienteResponseList(List<Paciente> pacientes) {
+        // for em cada paciente da lista de paciente
+        // para cada um ele passa para o metodo
+        // e no fim passa tudo para uma nova lista
+        return pacientes.stream()
+                .map(this::toPacienteResponse)
+                .collect(Collectors.toList());
+    }
+
+// forma antiga de fazer o mapper sem o modal mapper
+
+//    public static List<PacienteResponse> toPacienteResponseList(List<Paciente> pacientes) {
+//        // crio lista vazio
+//        List<PacienteResponse> responses = new ArrayList<>();
+//        // itero para adicionar a nova lista os pacientes response
+//        for (Paciente paciente : pacientes){
+//            //usando o proprio metodo de response
+//            responses.add(toPacienteResponse(paciente));
+//        }
 //
-//        return paciente;
+//        return responses;
 //
 //    }
-
-    public static PacienteResponse toPacienteResponse(Paciente paciente) {
-        PacienteResponse response = new PacienteResponse();
-        response.setId(paciente.getId());
-        response.setNome(paciente.getNome());
-        response.setSobrenome(paciente.getSobrenome());
-        response.setEmail(paciente.getEmail());
-        response.setCpf(paciente.getCpf());
-
-        return response;
-
-    }
-
-    public static List<PacienteResponse> toPacienteResponseList(List<Paciente> pacientes) {
-        // crio lista vazio
-        List<PacienteResponse> responses = new ArrayList<>();
-        // itero para adicionar a nova lista os pacientes response
-        for (Paciente paciente : pacientes){
-            //usando o proprio metodo de response
-            responses.add(toPacienteResponse(paciente));
-        }
-
-        return responses;
-
-    }
 }

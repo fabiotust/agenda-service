@@ -19,18 +19,19 @@ import java.util.Optional;
 public class PacienteController {
 
     private final PacienteService service;
+    private final PacienteMapper mapper;
 
     @PostMapping
     public ResponseEntity<PacienteResponse> salvar(@RequestBody PacienteRequest request){
 
         // como recebi uma request, preciso transformar de pacienteRequest para paciente
-        Paciente paciente = PacienteMapper.toPaciente(request);
+        Paciente paciente = mapper.toPaciente(request);
 
         // salvo paciente
         Paciente pacienteSalvo = service.salvar(paciente);
 
         // recebo o paciente salvo e preciso tranformar para paciente response para retornar
-        PacienteResponse pacienteResponse = PacienteMapper.toPacienteResponse(pacienteSalvo);
+        PacienteResponse pacienteResponse = mapper.toPacienteResponse(pacienteSalvo);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(pacienteResponse);
 
@@ -41,7 +42,7 @@ public class PacienteController {
 
         List<Paciente> pacientes = service.listarTodos();
 
-        List<PacienteResponse> pacienteResponses = PacienteMapper.toPacienteResponseList(pacientes);
+        List<PacienteResponse> pacienteResponses = mapper.toPacienteResponseList(pacientes);
 
         return ResponseEntity.status(HttpStatus.OK).body(pacienteResponses);
     }
@@ -55,7 +56,7 @@ public class PacienteController {
         }
         Paciente paciente = optPaciente.get();
 
-        PacienteResponse pacienteResponse = PacienteMapper.toPacienteResponse(paciente);
+        PacienteResponse pacienteResponse = mapper.toPacienteResponse(paciente);
 
         return ResponseEntity.status(HttpStatus.OK).body(pacienteResponse);
     }
@@ -63,11 +64,11 @@ public class PacienteController {
     @PutMapping
     public ResponseEntity<PacienteResponse> alterar(@RequestBody PacienteRequest request){
 
-        Paciente paciente = PacienteMapper.toPaciente(request);
+        Paciente paciente = mapper.toPaciente(request);
 
         Paciente pacienteSalvo = service.salvar(paciente);
 
-        PacienteResponse pacienteResponse = PacienteMapper.toPacienteResponse(pacienteSalvo);
+        PacienteResponse pacienteResponse = mapper.toPacienteResponse(pacienteSalvo);
 
         return ResponseEntity.status(HttpStatus.OK).body(pacienteResponse);
 
